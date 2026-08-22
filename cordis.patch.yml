@@ -1,0 +1,20 @@
+# dsh-flashcard bundle patch
+#
+# This file is the `dsh.bundle.patch` layer of the npm package. When the
+# plugin is installed through the official CLI —
+#
+#   dsh plugin --profile web add <path|github:...|npm>
+#
+# — the command reconciles `dsh.profile.bundles` against installed packages
+# and appends `dsh-flashcard` to the bundle stack. The profile boot then
+# merges THIS patch (a single `insert` of the plugin row) into the loader
+# entry list.
+#
+# The plugin hard-depends on dsh-better-sidebar: its client half injects the
+# `betterSidebar` cordis service (see src/client/index.tsx `export const
+# inject = ['betterSidebar']`) and registers a tab through it. Cordis
+# resolves that dependency topologically, so dsh-better-sidebar must be
+# installed and enabled in the same profile.
+- insert:
+    - id: flashcard
+      name: 'dsh-flashcard'
