@@ -2,6 +2,11 @@
  * Flashcard review panel. Renders inside the right sidebar tab registered by
  * client/index.tsx. All data comes from the host through /flashcard/api.
  *
+ * Layout (v2, "卡片主角"): the card owns the central region (flex:1,
+ * vertically centered) so it no longer hugs the top; a divider separates the
+ * review surface from a bottom action bar — nav row, four big Anki-style
+ * grade buttons, and the quick right/wrong/ask-AI row.
+ *
  * Features: deck picker, flip-to-reveal, prev/next navigation, four-button
  * Anki-style grading, quick right/wrong marks, and "ask AI" which injects the
  * card context into the composer draft (the same path the sidebar's
@@ -140,18 +145,29 @@ export function FlashcardView(props: TabComponentProps): unknown {
   }
 
   const s = {
-    wrap: { display: 'flex', flexDirection: 'column', gap: '10px', padding: '12px', fontFamily: 'var(--font-sans, system-ui)', color: 'var(--color-text-primary, #1a1a1a)' },
-    row: { display: 'flex', gap: '6px', alignItems: 'center' },
-    select: { flex: 1, padding: '6px 8px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-primary, #fff)', color: 'inherit', fontSize: '13px' },
+    wrap: { display: 'flex', flexDirection: 'column', height: '100%', gap: '10px', padding: '12px', fontFamily: 'var(--font-sans, system-ui)', color: 'var(--color-text-primary, #1a1a1a)' },
+    row: { display: 'flex', gap: '8px', alignItems: 'center' },
+    select: { flex: 1, padding: '8px 10px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-primary, #fff)', color: 'inherit', fontSize: '13px' },
+    gear: { flex: 'none', padding: '8px 12px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-secondary, #fafafa)', color: 'inherit', fontSize: '12px', cursor: 'pointer' },
     progress: { fontSize: '12px', color: 'var(--color-text-secondary, #666)', display: 'flex', justifyContent: 'space-between' },
     bar: { height: '4px', borderRadius: '2px', background: 'var(--color-background-tertiary, #eee)', overflow: 'hidden' },
-    card: { border: '0.5px solid var(--color-border-secondary, #ccc)', borderRadius: '12px', padding: '18px 16px', minHeight: '150px', cursor: 'pointer', background: 'var(--color-background-secondary, #fafafa)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' as const },
-    tag: { fontSize: '11px', color: 'var(--color-text-tertiary, #999)', marginBottom: '8px' },
-    q: { fontSize: '15px', fontWeight: '500' as const, lineHeight: '1.6' },
-    a: { fontSize: '14px', lineHeight: '1.65', color: 'var(--color-text-primary, #1a1a1a)' },
-    btn: { flex: 1, padding: '6px 8px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-primary, #fff)', color: 'inherit', fontSize: '12px', cursor: 'pointer' },
-    gradeGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' },
-    toast: { fontSize: '12px', color: 'var(--color-text-secondary, #666)', minHeight: '16px' },
+    // Card owns the central region: flex:1 + centered, so it floats in the middle instead of hugging the top.
+    cardRegion: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px 12px' },
+    // Portrait "card" silhouette: capped width + tall min-height leaves clear side margins and reads as a
+    // vertical card rather than an edge-to-edge block; soft shadow gives it elevation.
+    card: { width: '100%', maxWidth: '208px', minHeight: '300px', border: '0.5px solid var(--color-border-secondary, #ccc)', borderRadius: '16px', padding: '24px 18px', cursor: 'pointer', background: 'var(--color-background-secondary, #fafafa)', boxShadow: '0 6px 18px rgba(0,0,0,0.10)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' as const },
+    tag: { fontSize: '11px', color: 'var(--color-text-tertiary, #999)', marginBottom: '10px' },
+    q: { fontSize: '16px', fontWeight: '500' as const, lineHeight: '1.6' },
+    a: { fontSize: '15px', lineHeight: '1.65', color: 'var(--color-text-primary, #1a1a1a)' },
+    flipBtn: { marginTop: '16px', padding: '8px 16px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-primary, #fff)', color: 'inherit', fontSize: '13px', cursor: 'pointer' },
+    divider: { height: '1px', background: 'var(--color-border-tertiary, #ddd)', margin: '2px 0' },
+    btn: { flex: 1, padding: '10px 8px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-primary, #fff)', color: 'inherit', fontSize: '13px', cursor: 'pointer' },
+    gradeGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' },
+    gradeBtn: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2px', padding: '10px 2px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', fontSize: '14px', cursor: 'pointer' },
+    gradeHint: { fontSize: '11px', opacity: 0.8 },
+    quickBtn: { flex: 1, padding: '10px 8px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-primary, #fff)', color: 'inherit', fontSize: '13px', cursor: 'pointer' },
+    generateBtn: { width: '100%', padding: '10px 8px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-secondary, #f0f0f0)', color: 'inherit', fontSize: '13px', cursor: 'pointer' },
+    toast: { fontSize: '12px', color: 'var(--color-text-secondary, #666)', minHeight: '16px', textAlign: 'center' },
     empty: { padding: '40px 12px', textAlign: 'center' as const, fontSize: '13px', color: 'var(--color-text-secondary, #666)' },
   } as const
 
@@ -162,11 +178,7 @@ export function FlashcardView(props: TabComponentProps): unknown {
           {decks.length === 0 && <option value="">（暂无牌组）</option>}
           {decks.map((d) => <option key={d.name} value={d.name}>{d.name}（{d.total}）</option>)}
         </select>
-        <button
-          style={{ ...s.btn, flex: 'none', padding: '4px 10px' }}
-          title="设置"
-          onClick={() => setShowSettings(true)}
-        >⚙ 设置</button>
+        <button style={s.gear} title="设置" onClick={() => setShowSettings(true)}>设置</button>
       </div>
 
       {showSettings && (
@@ -205,23 +217,30 @@ export function FlashcardView(props: TabComponentProps): unknown {
       {deck !== '' && <div style={s.bar}><div style={{ height: '100%', width: queue.length === 0 ? '0%' : `${Math.round(((idx + 1) / queue.length) * 100)}%`, background: 'var(--color-text-info, #185fa5)' }} /></div>}
 
       {card === undefined ? (
-        <div style={s.empty}>
-          {deck === '' ? '还没有牌组。去聊天框说「把 XX 做成闪卡」，或点下面的「生成闪卡」。' : '本牌组暂无到期卡片，休息一下或复习其他牌组。'}
+        <div style={s.cardRegion}>
+          <div style={s.empty}>
+            {deck === '' ? '还没有牌组。去聊天框说「把 XX 做成闪卡」，或点下面的「生成闪卡」。' : '本牌组暂无到期卡片，休息一下或复习其他牌组。'}
+          </div>
         </div>
       ) : (
-        <>
+        <div style={s.cardRegion}>
           <div style={s.card} onClick={() => setFlipped((f) => !f)}>
             {showTags && <div style={s.tag}>{card.tags.length > 0 ? card.tags.join(' · ') : '闪卡'}</div>}
             {flipped ? <div style={s.a}>{card.back}</div> : <div style={s.q}>{card.front}</div>}
             <button
-              style={{ ...s.btn, flex: 'none', marginTop: '12px', padding: '4px 14px' }}
+              style={s.flipBtn}
               onClick={(e) => { e.stopPropagation(); setFlipped((f) => !f) }}
             >{flipped ? '收起答案' : '显示答案'}</button>
           </div>
+        </div>
+      )}
 
+      {card !== undefined && (
+        <>
+          <div style={s.divider} />
           <div style={s.row}>
-            <button style={s.btn} onClick={prev}>← 上一题</button>
-            <button style={s.btn} onClick={next}>下一题 →</button>
+            <button style={s.btn} onClick={prev}>上一题</button>
+            <button style={s.btn} onClick={next}>下一题</button>
           </div>
 
           <div style={s.gradeGrid}>
@@ -230,21 +249,24 @@ export function FlashcardView(props: TabComponentProps): unknown {
                 key={g.rating}
                 disabled={busy}
                 onClick={() => grade(g.rating)}
-                style={{ padding: '8px 2px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: g.bg, color: g.fg, fontSize: '12px', cursor: 'pointer' }}
-              >{g.label}<br /><span style={{ fontSize: '10px', opacity: 0.8 }}>{g.hint}</span></button>
+                style={{ ...s.gradeBtn, background: g.bg, color: g.fg }}
+              >
+                <span>{g.label}</span>
+                <span style={s.gradeHint}>{g.hint}</span>
+              </button>
             ))}
           </div>
 
           <div style={s.row}>
-            <button style={{ ...s.btn, color: '#1e7a1e' }} onClick={() => mark(true)}>✓ 对</button>
-            <button style={{ ...s.btn, color: '#b91c1c' }} onClick={() => mark(false)}>✗ 错</button>
-            <button style={{ ...s.btn, flex: 1.6, background: 'var(--color-background-secondary, #f0f0f0)' }} onClick={askAI}>问 AI 解释 ↗</button>
+            <button style={{ ...s.quickBtn, color: '#1e7a1e' }} onClick={() => mark(true)}>对</button>
+            <button style={{ ...s.quickBtn, color: '#b91c1c' }} onClick={() => mark(false)}>错</button>
+            <button style={{ ...s.quickBtn, flex: 1.6, background: 'var(--color-background-secondary, #f0f0f0)' }} onClick={askAI}>问 AI</button>
           </div>
         </>
       )}
 
       <div style={s.row}>
-        <button style={{ ...s.btn, background: 'var(--color-background-secondary, #f0f0f0)' }} onClick={generateCards}>＋ 从文档生成闪卡</button>
+        <button style={s.generateBtn} onClick={generateCards}>＋ 从文档生成闪卡</button>
       </div>
 
       <div style={s.toast}>{toast}</div>
