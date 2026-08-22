@@ -280,7 +280,6 @@ dsh-flashcard/
 - **开发者预览期**：DSH `0.1.0-rc.x` 可能有破坏性变更，升级后需重新构建并验证。
 - **信任围栏非鉴权**：`/flashcard/api` 仅做同源 / loopback 校验，不鉴权；不要在不可信网络暴露本机 DSH 端口。
 - **同步盘冲突**：`~/.dsh` 被坚果云等同步盘锁文件占用时，`dsh plugin add` / 启动可能失败，需临时暂停同步或用手动安装兜底。
-- **`CODEBUDDY_SESSION_ID` 等环境变量**：部分外壳会注入 safe-delete shim 拦截 `fs` 删除，如启动异常可用 `env -u CODEBUDDY_SESSION_ID -u CLAUDE_SESSION_ID dsh web` 启动。
 
 ---
 
