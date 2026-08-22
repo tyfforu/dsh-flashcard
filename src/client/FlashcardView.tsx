@@ -152,13 +152,13 @@ export function FlashcardView(props: TabComponentProps): unknown {
     progress: { fontSize: '12px', color: 'var(--color-text-secondary, #666)', display: 'flex', justifyContent: 'space-between' },
     bar: { height: '4px', borderRadius: '2px', background: 'var(--color-background-tertiary, #eee)', overflow: 'hidden' },
     // Card owns the central region: flex:1 + centered, so it floats in the middle instead of hugging the top.
-    cardRegion: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px 12px' },
-    // Portrait "card" silhouette: capped width + tall min-height leaves clear side margins and reads as a
-    // vertical card rather than an edge-to-edge block; soft shadow gives it elevation.
-    card: { width: '100%', maxWidth: '208px', minHeight: '300px', border: '0.5px solid var(--color-border-secondary, #ccc)', borderRadius: '16px', padding: '24px 18px', cursor: 'pointer', background: 'var(--color-background-secondary, #fafafa)', boxShadow: '0 6px 18px rgba(0,0,0,0.10)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' as const },
-    tag: { fontSize: '11px', color: 'var(--color-text-tertiary, #999)', marginBottom: '10px' },
-    q: { fontSize: '16px', fontWeight: '500' as const, lineHeight: '1.6' },
-    a: { fontSize: '15px', lineHeight: '1.65', color: 'var(--color-text-primary, #1a1a1a)' },
+    cardRegion: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px 10px' },
+    // Portrait "card" silhouette: larger capped width + taller min-height for a bigger card, still with clear
+    // side margins and soft shadow so it reads as a card rather than an edge-to-edge block.
+    card: { width: '100%', maxWidth: '264px', minHeight: '384px', border: '0.5px solid var(--color-border-secondary, #ccc)', borderRadius: '16px', padding: '26px 20px', cursor: 'pointer', background: 'var(--color-background-secondary, #fafafa)', boxShadow: '0 6px 18px rgba(0,0,0,0.10)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' as const },
+    tag: { fontSize: '11px', color: 'var(--color-text-tertiary, #999)', marginBottom: '12px' },
+    q: { fontSize: '17px', fontWeight: '500' as const, lineHeight: '1.6' },
+    a: { fontSize: '16px', lineHeight: '1.65', color: 'var(--color-text-primary, #1a1a1a)' },
     flipBtn: { marginTop: '16px', padding: '8px 16px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-primary, #fff)', color: 'inherit', fontSize: '13px', cursor: 'pointer' },
     divider: { height: '1px', background: 'var(--color-border-tertiary, #ddd)', margin: '2px 0' },
     btn: { flex: 1, padding: '10px 8px', borderRadius: '8px', border: '0.5px solid var(--color-border-secondary, #ccc)', background: 'var(--color-background-primary, #fff)', color: 'inherit', fontSize: '13px', cursor: 'pointer' },
